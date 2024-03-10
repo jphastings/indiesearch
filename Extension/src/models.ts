@@ -1,16 +1,23 @@
-export type BrowserMessageType = 'getColorScheme' | 'gotColorScheme';
+export type BrowserMessageType = 'foundSite';
 
 export type BrowserMessage = {
-  type: BrowserMessageType;
-  value?: any;
+  type: 'foundSite';
+  searchSpec: SiteSpec;
 };
 
 export type AppSettings = {
-  displayHelpMessage: boolean;
+  sites: { [key: string]: SiteSpec };
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  displayHelpMessage: true
+  sites: {},
 };
 
-export type ColorScheme = 'light' | 'dark';
+export type SiteSpec = {
+  title: string;
+  bundlePath: string;
+  baseUrl: string;
+  category?: SiteCategory;
+};
+
+export type SiteCategory = undefined | 'included' | 'excluded';

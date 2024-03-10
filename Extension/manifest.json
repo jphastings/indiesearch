@@ -19,15 +19,19 @@
   },
 
   "host_permissions": [],
-
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; child-src 'self';"
+  },
   "content_scripts": [
     {
       "js": ["dist/content.js"],
-      "matches": ["*://example.com/*"]
+      "matches": ["<all_urls>"]
     }
   ],
 
   "action": {
+    "default": "Start a search",
     "default_popup": "public/popup.html",
     "default_icon": {
       "16": "images/toolbar_16px.png",
@@ -39,7 +43,7 @@
     }
   },
 
-  "permissions": ["storage"],
+  "permissions": ["storage", "tabs", "activeTab", "scripting", "http://*/", "https://*/"],
 
   "options_ui": {
     "page": "public/settings.html",

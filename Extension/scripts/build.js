@@ -1,6 +1,7 @@
-const { build } = require('esbuild');
-const sveltePlugin = require('esbuild-svelte');
-const sveltePreprocess = require('svelte-preprocess');
+import { build } from 'esbuild';
+import sveltePlugin from 'esbuild-svelte';
+import sveltePreprocess from 'svelte-preprocess';
+import * as pagefind from "pagefind";
 
 const isProdBuild = process.argv.includes('--prod');
 
@@ -55,7 +56,35 @@ async function main() {
     ]
   });
 
-  return Promise.all([contentJob, backgroundJob, popupJob, settingsJob]).then(
+  const searchJob = build({
+    ...commonConfig,
+    entryPoints: ['./src/search/search.ts'],
+    outbase: './src/search',
+    outdir: './dist',
+    mainFields: ['svelte', 'module', 'main', 'browser'],
+    plugins: [
+      sveltePlugin({
+        preprocess: sveltePreprocess()
+      })
+    ]
+  });
+
+  const createLocalSearchIndex = async () => {
+    const { index } = await pagefind.createIndex();
+    // TODO: Do I want to include the extension's help in the index?
+    await index.addDirectory({
+      path: "./public/",
+    });
+    await index.writeFiles({
+      outputPath: "./public/pagefind"
+    });
+  }
+
+  return Promise.all([
+    contentJob, backgroundJob,
+    popupJob, settingsJob,
+    searchJob, createLocalSearchIndex(),
+  ]).then(
     () => console.log('⚡ Compiled')
   );
 }

@@ -1,17 +1,19 @@
 {
-  "name": "REPLACEME",
-  "version": "1.0.0",
+  "name": "indiesearch",
+  "version": "0.1.0",
   "description": "",
   "main": "background.js",
+  "type": "module",
   "scripts": {
     "format": "prettier --write .",
     "build": "node scripts/build.js",
     "build:prod": "node scripts/prod-build.js",
     "build:chrome": "node scripts/package-extension.js",
-    "build:firefox": "node scripts/firefox-build.js"
+    "build:firefox": "node scripts/firefox-build.js",
+    "generate:icons": "node scripts/generate-icons.js"
   },
   "keywords": [],
-  "author": "REPLACEME",
+  "author": "hello@byjp.me",
   "license": "MIT",
   "devDependencies": {
     "@tsconfig/svelte": "^5.0.0",
@@ -34,6 +36,7 @@
   },
   "dependencies": {
     "detect-browser": "^5.3.0",
+    "pagefind": "^1.0.4",
     "svelte": "^4.0.5",
     "webextension-polyfill": "^0.10.0"
   }
