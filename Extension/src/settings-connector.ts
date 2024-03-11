@@ -32,7 +32,7 @@ class SettingsConnector {
     });
   }
 
-  async moveSite(bundlePath: string, category: SiteCategory): Promise<void> {
+  async categorizeSite(bundlePath: string, category: SiteCategory): Promise<void> {
     const settings = await this.getAppSettings();
     if (!settings.sites[bundlePath]) {
       return;

@@ -1,38 +1,53 @@
 <script lang="ts">
+  import browser from 'webextension-polyfill';
   import SiteList from './SiteList.svelte';
   import settingsConnector from '../settings-connector';
-  import type { SiteCategory, SiteSpec } from '../models';
+  import type { AppSettings, BrowserMessage, SiteCategory, SiteSpec } from '../models';
 
   type SitesInCategories = { new: SiteSpec[], included: SiteSpec[], excluded: SiteSpec[] }
 
-  const getSites = () => {
-    sitesProm = settingsConnector.getAppSettings()
-      .then(settings => Object.values(settings.sites).reduce((acc, site) => {
-        acc[site.category || 'new'].push(site);
-        return acc;
-      }, (
-        {
-          new: [],
-          included: [],
-          excluded: [],
-        } as SitesInCategories
-      )))
-    sitesProm.then(console.log)
-  };
+  const processSites = (settings: AppSettings): SitesInCategories => (
+    Object.values(settings.sites).reduce((acc, site) => {
+      acc[site.category || 'new'].push(site);
+      return acc;
+    }, (
+      {
+        new: [],
+        included: [],
+        excluded: [],
+      } as SitesInCategories
+    ))
+  );
 
-  let sitesProm: Promise<SitesInCategories>;
-  getSites();
+  let sitesProm: Promise<SitesInCategories> = settingsConnector.getAppSettings().then(processSites);
+
+  browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'sitesUpdated') {
+      console.log('sitesUpdated')
+      sitesProm = settingsConnector.getAppSettings().then(processSites);
+    }
+  });
 
   const moveSite = (bundlePath: string, category: SiteCategory | 'removed'): Promise<void> => {
     if (category === 'removed') {
-      return settingsConnector.removeSite(bundlePath).then(getSites);
+      return browser.runtime.sendMessage({
+        type: "removeSite",
+        bundlePath,
+      } as BrowserMessage)
     }
-    return settingsConnector.moveSite(bundlePath, category).then(getSites);
-  }
-    
+    return browser.runtime.sendMessage({
+      type: "categorizeSite",
+      bundlePath,
+      category,
+    } as BrowserMessage)
+  }    
 
-  const cheatAddSite = (title: string, bundlePath: string, baseUrl: string): Promise<void> =>
-    settingsConnector.newSite({ title, bundlePath, baseUrl }).then(getSites);
+  const cheatAddSite = (title: string, bundlePath: string, baseUrl: string): Promise<void> => (
+    browser.runtime.sendMessage({
+      type: "newSite",
+      searchSpec: { title, bundlePath, baseUrl },
+    } as BrowserMessage)
+  )
 </script>
 
 <section>
@@ -60,7 +75,7 @@
   {#await sitesProm}
     <p>…</p>
   {:then sites} 
-    <SiteList sites={sites.excluded} showInclude showDestroy move={moveSite}/>
+    <SiteList sites={sites.excluded} showInclude showRemove move={moveSite}/>
   {/await}
 
   <h2>🔗 Cheatcodes</h2>

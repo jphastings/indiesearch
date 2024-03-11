@@ -1,20 +1,24 @@
 import browser from 'webextension-polyfill';
-import { detect } from 'detect-browser';
 import {
-  type BrowserMessage,
   type BrowserMessageType,
 } from './models';
 import settingsConnector from './settings-connector';
 
-console.log('background script running...');
-
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('got message', message);
-
   switch (message.type as BrowserMessageType) {
-    case 'foundSite': {
-      settingsConnector.newSite(message.searchSpec);
-      return true;
+    case 'newSite': {
+      settingsConnector.newSite(message.searchSpec).then(() => sitesUpdated());
+      break;
+    }
+    case 'categorizeSite': {
+      settingsConnector.categorizeSite(message.bundlePath, message.category).then(() => sitesUpdated());
+      break;
+    }
+    case 'removeSite': {
+      settingsConnector.removeSite(message.bundlePath).then(() => sitesUpdated());
+      break;
     }
   }
 });
+
+const sitesUpdated = (): Promise<void> => browser.runtime.sendMessage({ type: 'sitesUpdated' });

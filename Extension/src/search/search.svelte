@@ -1,9 +1,13 @@
 <script lang="ts">
-  import type { SiteSpec } from '../models';
+  import browser from 'webextension-polyfill';
+  import type { AppSettings, BrowserMessageType, SiteSpec } from '../models';
   import settingsConnector from '../settings-connector';
 
-  const siteProm = settingsConnector.getAppSettings()
-    .then(settings => Object.values(settings.sites).filter(s => s.category !== 'excluded'))
+  const processSites = (settings: AppSettings): SiteSpec[] => (
+    Object.values(settings.sites).filter(s => s.category !== 'excluded')
+  )
+
+  let sitesProm: Promise<SiteSpec[]> = settingsConnector.getAppSettings().then(processSites)
 
   const loadSearch = (element: HTMLElement, sites: SiteSpec[]) => {
     const mergeIndex = sites.map(({ baseUrl, bundlePath }) => ({ baseUrl, bundlePath }));
@@ -16,10 +20,18 @@
       autofocus: true,
     });
   }
+
+  browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'sitesUpdated') {
+      console.log('sitesUpdated')
+      sitesProm = settingsConnector.getAppSettings().then(processSites);
+    }
+  });
+
 </script>
 
 <h1>IndieSearch</h1>
-{#await siteProm}
+{#await sitesProm}
   <p>…</p>
 {:then sites}
   <section use:loadSearch={sites}></section>

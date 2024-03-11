@@ -16,7 +16,7 @@ function findSearchLink(): void {
   const baseUrl = getBaseUrl();
 
   browser.runtime.sendMessage({
-    type: "foundSite",
+    type: "newSite",
     searchSpec: {
       title: searchLinkEl.getAttribute('title'),
       bundlePath: new URL(searchHref, baseUrl).toString(),

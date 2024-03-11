@@ -4,7 +4,7 @@
   export let sites: SiteSpec[] = [];
   export let showInclude: boolean = false;
   export let showExclude: boolean = false;
-  export let showDestroy: boolean = false;
+  export let showRemove: boolean = false;
   export let move: (bundlePath: string, category: SiteCategory | 'removed') => Promise<void>;
 </script>
 
@@ -21,7 +21,7 @@
       {#if showExclude}
         <button on:click={() => move(site.bundlePath, 'excluded')}>🚫</button>
       {/if}
-      {#if showDestroy}
+      {#if showRemove}
         <button on:click={() => move(site.bundlePath, 'removed')}>💥</button>
       {/if}
     </li>
