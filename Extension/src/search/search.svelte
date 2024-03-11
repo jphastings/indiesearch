@@ -9,10 +9,12 @@
 
   let sitesProm: Promise<SiteSpec[]> = settingsConnector.getAppSettings().then(processSites)
 
+  let search: any;
   const loadSearch = (element: HTMLElement, sites: SiteSpec[]) => {
     const mergeIndex = sites.map(({ baseUrl, bundlePath }) => ({ baseUrl, bundlePath }));
+    if (search) search.destroy();
     // @ts-ignore
-    new PagefindUI({
+    search = new PagefindUI({
       element,
       mergeIndex,
       pageSize: 20,
@@ -23,7 +25,6 @@
 
   browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'sitesUpdated') {
-      console.log('sitesUpdated')
       sitesProm = settingsConnector.getAppSettings().then(processSites);
     }
   });

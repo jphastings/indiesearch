@@ -23,7 +23,6 @@
 
   browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'sitesUpdated') {
-      console.log('sitesUpdated')
       sitesProm = settingsConnector.getAppSettings().then(processSites);
     }
   });
