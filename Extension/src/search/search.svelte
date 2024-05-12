@@ -31,6 +31,16 @@
 
 </script>
 
+<style>
+  h1 {
+    padding: 1em 0;
+  }
+
+  footer {
+    margin-top: 2em;
+  }
+</style>
+
 <h1>IndieSearch</h1>
 {#await sitesProm}
   <p>…</p>
@@ -50,8 +60,6 @@
   </aside>
 {/await}
 
-<style>
-  h1 {
-    padding: 1em 0;
-  }
-</style>
+<footer>
+  Powered by <a href="https://pagefind.app">PageFind</a>. <a href="https://github.com/jphastings/indiesearch" target="_blank">Source on Github</a>.
+</footer>

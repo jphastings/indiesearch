@@ -1,5 +1,6 @@
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
+import util  from 'util';
+import { exec as unPromisedExec } from 'child_process';
+const exec = util.promisify(unPromisedExec);
 
 const toolbarSizes = [16, 19, 32, 38, 48, 64, 72];
 const appIconSizes = [48, 96, 128, 256, 512];

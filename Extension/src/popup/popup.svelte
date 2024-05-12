@@ -49,6 +49,12 @@
   )
 </script>
 
+<style>
+  section {
+    min-width: 450px;
+  }
+</style>
+
 <section>
   <h1>IndieSearch: Sites</h1>
   <p>Choose which sites are included in your <a href="search.html" target="_blank">IndieSearches</a>.</p>
@@ -62,7 +68,7 @@
   {/await}
 
   <h2>✅ Included</h2>
-  <p>You've marked these sites to be included in your IndieSearches.</p>
+  <p>These sites will <em>always</em> feature in your IndieSearches.</p>
   {#await sitesProm}
     <p>…</p>
   {:then sites} 
@@ -70,7 +76,7 @@
   {/await}
 
   <h2>🚫 Excluded</h2>
-  <p>These sites will never feature in your IndieSearches.</p>
+  <p>These sites will <em>never</em> feature in your IndieSearches.</p>
   {#await sitesProm}
     <p>…</p>
   {:then sites} 
