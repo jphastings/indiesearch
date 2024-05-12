@@ -9,6 +9,7 @@ More coming here soon; but please reach out to me at [byjp.me](https://www.byjp.
 https://github.com/jphastings/indiesearch/assets/42999/b1042abe-6aef-4157-bc08-770cfd3becfc
 
 This demo shows:
+
 - 🖱️ Accessing the search page direct from your extensions list
 - 😔 Performing a search with no sites in your IndieSearch index (no results!)
 - 🤓 (Cheatcode) Using a quick hack to add the PageFind site's search to the local index (these wouldn't be present in a proper build)
